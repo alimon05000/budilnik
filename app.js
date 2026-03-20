@@ -1,4 +1,3 @@
-// --- ТВОЙ СКРИПТ НАВИГАЦИИ ---
 const switcher = document.querySelector('.switcher');
 const trackPrevious = (el) => {
   const radios = el.querySelectorAll('input[type="radio"]');
@@ -14,26 +13,35 @@ const trackPrevious = (el) => {
         el.setAttribute('c-previous', previousValue ?? '');
         previousValue = radio.getAttribute("c-option");
         
-        // Переключение вкладок
-        document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-        document.getElementById(`tab-${radio.value}`).style.display = 'flex';
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.style.display = 'none';
+          tab.classList.remove('active');
+        });
+        const targetTab = document.getElementById(`tab-${radio.value}`);
+        targetTab.style.display = 'flex';
+        setTimeout(() => targetTab.classList.add('active'), 10);
       }
     });
   });
 }
 trackPrevious(switcher);
 
-// --- ЛОГИКА ПРИЛОЖЕНИЯ ---
 let alarmTimeStr = null;
 let wakeLock = null;
 let alarmInterval = null;
 let currentAnswer = 0;
 
-// Загрузка статистики
 let statsCount = localStorage.getItem('tahajjud_count') || 0;
 document.getElementById('stats-count').innerText = statsCount;
 
-// Получение времени намазов для Махачкалы (API Aladhan)
+// Запрос прав на пуш-уведомления для фоновой работы
+async function requestNotificationPermission() {
+  if ("Notification" in window) {
+    const permission = await Notification.requestPermission();
+    console.log("Статус разрешений на уведомления:", permission);
+  }
+}
+
 async function fetchPrayerTimes() {
   try {
     const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Makhachkala&country=Russia&method=2');
@@ -50,7 +58,6 @@ async function fetchPrayerTimes() {
   }
 }
 
-// Расчет последней трети ночи
 function calculateThirdNight(maghrib, fajr) {
   const [mHours, mMins] = maghrib.split(':').map(Number);
   const [fHours, fMins] = fajr.split(':').map(Number);
@@ -59,56 +66,65 @@ function calculateThirdNight(maghrib, fajr) {
   maghribDate.setHours(mHours, mMins, 0, 0);
   
   let fajrDate = new Date();
-  fajrDate.setDate(fajrDate.getDate() + 1); // Фаджр следующего дня
+  fajrDate.setDate(fajrDate.getDate() + 1); 
   fajrDate.setHours(fHours, fMins, 0, 0);
 
-  // Продолжительность ночи в миллисекундах
   const nightDuration = fajrDate - maghribDate;
   const thirdDuration = nightDuration / 3;
   
-  // Время начала последней трети
   const thirdNightStart = new Date(fajrDate.getTime() - thirdDuration);
   
-  alarmTimeStr = thirdNightStart.toTimeString().slice(0, 5); // Формат HH:MM
+  alarmTimeStr = thirdNightStart.toTimeString().slice(0, 5); 
   document.getElementById('third-night-time').innerText = alarmTimeStr;
 }
 
-// Удержание экрана включенным (чтобы PWA не уснуло)
 async function requestWakeLock() {
   try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    console.log('Экран не погаснет');
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('Экран не погаснет (Wake Lock активен)');
+    }
   } catch (err) {
-    console.error('Wake Lock API не поддерживается', err);
+    console.error('Wake Lock API ошибка', err);
   }
 }
 
-// Логика Будильника
 document.getElementById('enable-alarm-btn').addEventListener('click', () => {
   if (!alarmTimeStr) return;
   
+  requestNotificationPermission(); // Спрашиваем при нажатии на кнопку
   requestWakeLock();
-  document.getElementById('alarm-status').innerText = "Будильник активирован. Оставьте приложение открытым на экране и телефон на зарядке.";
   
-  // Проверяем время каждую минуту
+  document.getElementById('alarm-status').innerText = "Будильник и фоновые процессы активированы.";
+  
   if(alarmInterval) clearInterval(alarmInterval);
   alarmInterval = setInterval(() => {
     const now = new Date().toTimeString().slice(0, 5);
     if (now === alarmTimeStr) {
       triggerAlarm();
     }
-  }, 60000); // Раз в минуту
+  }, 10000); // Проверка каждые 10 секунд
 });
 
-// Запуск будильника
 function triggerAlarm() {
-  document.getElementById('alarm-sound').play();
+  // Попытка системного уведомления для фона
+  if (Notification.permission === "granted") {
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.showNotification("Время Тахаджуда!", {
+        body: "Пора вставать на ночной намаз.",
+        vibrate: [200, 100, 200, 100, 200, 100, 200],
+        requireInteraction: true
+      });
+    });
+  }
+
+  // Запуск аудио и UI
+  document.getElementById('alarm-sound').play().catch(e => console.log("Браузер заблокировал автоплей: ", e));
   generatePuzzle();
   document.getElementById('puzzle-modal').style.display = 'flex';
   clearInterval(alarmInterval);
 }
 
-// Генерация головоломки
 function generatePuzzle() {
   const num1 = Math.floor(Math.random() * 50) + 10;
   const num2 = Math.floor(Math.random() * 50) + 10;
@@ -118,7 +134,6 @@ function generatePuzzle() {
   document.getElementById('puzzle-answer').value = '';
 }
 
-// Проверка ответа
 document.getElementById('submit-puzzle').addEventListener('click', () => {
   const userAnswer = parseInt(document.getElementById('puzzle-answer').value);
   if (userAnswer === currentAnswer) {
@@ -126,7 +141,6 @@ document.getElementById('submit-puzzle').addEventListener('click', () => {
     document.getElementById('alarm-sound').currentTime = 0;
     document.getElementById('puzzle-modal').style.display = 'none';
     
-    // Обновляем статистику
     statsCount++;
     localStorage.setItem('tahajjud_count', statsCount);
     document.getElementById('stats-count').innerText = statsCount;
@@ -138,10 +152,8 @@ document.getElementById('submit-puzzle').addEventListener('click', () => {
   }
 });
 
-// Инициализация
 fetchPrayerTimes();
 
-// Регистрация Service Worker для PWA
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
