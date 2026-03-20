@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tahajjud Alarm</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
+</head>
+<body>
+
+  <audio id="alarm-sound" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+  <main id="tab-timer" class="tab-content active article">
+    <h2>Треть ночи (Махачкала)</h2>
+    <div class="box" style="text-align: center;">
+      <p id="maghrib-time">Магриб: Загрузка...</p>
+      <p id="fajr-time">Фаджр: Загрузка...</p>
+      <hr style="border-color: var(--c-action); opacity: 0.3; margin: 15px 0;">
+      <h3>Начало 3-й трети:</h3>
+      <h1 id="third-night-time">--:--</h1>
+      <button id="enable-alarm-btn" class="glass-btn">Включить будильник</button>
+      <p id="alarm-status" style="font-size: 0.8em; margin-top: 10px; color: var(--c-action);"></p>
+    </div>
+  </main>
+
+  <main id="tab-dua" class="tab-content article" style="display: none;">
+    <h2>Дуа и Зикр</h2>
+    <div class="box">
+      <h3>Дуа Кунут (Витр)</h3>
+      <p>Аллахумма-хдина фи-ман хадайт, ва 'афина фи-ман 'афайт, ва тавалляна фи-ман тавалляйт...</p>
+      <hr style="border-color: var(--c-action); opacity: 0.3;">
+      <h3>Махдина</h3>
+      <p>Здесь можно разместить дополнительный текст мольбы или переводы.</p>
+    </div>
+  </main>
+
+  <main id="tab-stats" class="tab-content article" style="display: none;">
+    <h2>Статистика</h2>
+    <div class="box" style="text-align: center;">
+      <p>Выполнено ночных выстаиваний:</p>
+      <h1 id="stats-count">0</h1>
+    </div>
+  </main>
+
+  <div id="puzzle-modal" class="modal">
+    <div class="box modal-content">
+      <h2>ВРЕМЯ ТАХАДЖУДА!</h2>
+      <p>Чтобы выключить будильник, решите пример:</p>
+      <h1 id="math-problem">15 + 27 = ?</h1>
+      <input type="number" id="puzzle-answer" placeholder="Ответ" class="glass-input">
+      <button id="submit-puzzle" class="glass-btn" style="margin-top: 15px;">Выключить</button>
+      <p id="puzzle-error" style="color: red; display: none;">Неверно, попробуйте еще раз!</p>
+    </div>
+  </div>
+
+  <fieldset class="switcher" id="bottom-nav">
+    <legend class="switcher__legend">Навигация</legend>
+    <input class="switcher__filter" type="checkbox" id="theme-switch" value="dim" checked>
+    
+    <label class="switcher__option">
+      <input class="switcher__input" type="radio" name="nav" value="timer" c-option="1" checked>
+      <span class="switcher__icon">🌙</span>
+    </label>
+    
+    <label class="switcher__option">
+      <input class="switcher__input" type="radio" name="nav" value="dua" c-option="2">
+      <span class="switcher__icon">🤲</span>
+    </label>
+    
+    <label class="switcher__option">
+      <input class="switcher__input" type="radio" name="nav" value="stats" c-option="3">
+      <span class="switcher__icon">📊</span>
+    </label>
+  </fieldset>
+
+  <script src="app.js"></script>
+</body>
+</html>
