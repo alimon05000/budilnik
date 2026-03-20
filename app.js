@@ -34,7 +34,6 @@ let currentAnswer = 0;
 let statsCount = localStorage.getItem('tahajjud_count') || 0;
 document.getElementById('stats-count').innerText = statsCount;
 
-// Запрос прав на пуш-уведомления для фоновой работы
 async function requestNotificationPermission() {
   if ("Notification" in window) {
     const permission = await Notification.requestPermission();
@@ -92,7 +91,7 @@ async function requestWakeLock() {
 document.getElementById('enable-alarm-btn').addEventListener('click', () => {
   if (!alarmTimeStr) return;
   
-  requestNotificationPermission(); // Спрашиваем при нажатии на кнопку
+  requestNotificationPermission();
   requestWakeLock();
   
   document.getElementById('alarm-status').innerText = "Будильник и фоновые процессы активированы.";
@@ -103,11 +102,10 @@ document.getElementById('enable-alarm-btn').addEventListener('click', () => {
     if (now === alarmTimeStr) {
       triggerAlarm();
     }
-  }, 10000); // Проверка каждые 10 секунд
+  }, 10000);
 });
 
 function triggerAlarm() {
-  // Попытка системного уведомления для фона
   if (Notification.permission === "granted") {
     navigator.serviceWorker.ready.then((registration) => {
       registration.showNotification("Время Тахаджуда!", {
@@ -118,7 +116,6 @@ function triggerAlarm() {
     });
   }
 
-  // Запуск аудио и UI
   document.getElementById('alarm-sound').play().catch(e => console.log("Браузер заблокировал автоплей: ", e));
   generatePuzzle();
   document.getElementById('puzzle-modal').style.display = 'flex';
