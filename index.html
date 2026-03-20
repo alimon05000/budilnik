@@ -3,55 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tahajjud Alarm</title>
+  <title>Tahajjud Premium</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
 </head>
 <body>
 
   <audio id="alarm-sound" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
   <main id="tab-timer" class="tab-content active article">
-    <h2>Треть ночи (Махачкала)</h2>
+    <h2>Треть ночи</h2>
     <div class="box" style="text-align: center;">
-      <p id="maghrib-time">Магриб: Загрузка...</p>
-      <p id="fajr-time">Фаджр: Загрузка...</p>
-      <hr style="border-color: var(--c-action); opacity: 0.3; margin: 15px 0;">
-      <h3>Начало 3-й трети:</h3>
-      <h1 id="third-night-time">--:--</h1>
+      <p id="maghrib-time" style="opacity: 0.7;">Магриб: Загрузка...</p>
+      <p id="fajr-time" style="opacity: 0.7;">Фаджр: Загрузка...</p>
+      <hr style="border-color: var(--c-action); opacity: 0.2; margin: 15px 0;">
+      <h3 style="color: var(--c-action);">Начало 3-й трети:</h3>
+      <h1 id="third-night-time" style="font-size: 4em; font-weight: 300;">--:--</h1>
       <button id="enable-alarm-btn" class="glass-btn">Включить будильник</button>
-      <p id="alarm-status" style="font-size: 0.8em; margin-top: 10px; color: var(--c-action);"></p>
+      <p id="alarm-status" style="font-size: 0.8em; margin-top: 15px; color: var(--c-action);"></p>
     </div>
   </main>
 
   <main id="tab-dua" class="tab-content article" style="display: none;">
     <h2>Дуа и Зикр</h2>
     <div class="box">
-      <h3>Дуа Кунут (Витр)</h3>
-      <p>Аллахумма-хдина фи-ман хадайт, ва 'афина фи-ман 'афайт, ва тавалляна фи-ман тавалляйт...</p>
-      <hr style="border-color: var(--c-action); opacity: 0.3;">
-      <h3>Махдина</h3>
-      <p>Здесь можно разместить дополнительный текст мольбы или переводы.</p>
+      <h3 style="color: var(--c-action);">Дуа Кунут (Махдина)</h3>
+      <p dir="rtl" style="font-size: 1.6em; line-height: 2.2; text-align: right; font-family: 'Amiri', serif;">
+        اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، إِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ
+      </p>
+      <p style="font-size: 0.9em; opacity: 0.8; margin-top: 20px;">
+        О Аллах, поведи меня прямым путем вместе с теми, кого Ты повел прямым путем. Избавь меня [от всего дурного] вместе с теми, кого Ты избавил. Возьми меня под Свое покровительство вместе с теми, кого Ты взял под Свое покровительство...
+      </p>
     </div>
   </main>
 
   <main id="tab-stats" class="tab-content article" style="display: none;">
     <h2>Статистика</h2>
     <div class="box" style="text-align: center;">
-      <p>Выполнено ночных выстаиваний:</p>
-      <h1 id="stats-count">0</h1>
+      <p style="opacity: 0.8;">Выполнено ночных выстаиваний:</p>
+      <h1 id="stats-count" style="font-size: 5em; color: var(--c-action); margin: 10px 0;">0</h1>
     </div>
   </main>
 
   <div id="puzzle-modal" class="modal">
     <div class="box modal-content">
-      <h2>ВРЕМЯ ТАХАДЖУДА!</h2>
+      <h2 style="color: var(--c-action);">ВРЕМЯ ТАХАДЖУДА</h2>
       <p>Чтобы выключить будильник, решите пример:</p>
-      <h1 id="math-problem">15 + 27 = ?</h1>
+      <h1 id="math-problem" style="font-size: 3em;">15 + 27 = ?</h1>
       <input type="number" id="puzzle-answer" placeholder="Ответ" class="glass-input">
-      <button id="submit-puzzle" class="glass-btn" style="margin-top: 15px;">Выключить</button>
-      <p id="puzzle-error" style="color: red; display: none;">Неверно, попробуйте еще раз!</p>
+      <button id="submit-puzzle" class="glass-btn" style="margin-top: 20px;">Отключить</button>
+      <p id="puzzle-error" style="color: #ff4d4d; display: none; margin-top: 10px;">Неверно, попробуйте еще раз!</p>
     </div>
   </div>
 
@@ -61,17 +62,23 @@
     
     <label class="switcher__option">
       <input class="switcher__input" type="radio" name="nav" value="timer" c-option="1" checked>
-      <span class="switcher__icon">🌙</span>
+      <span class="switcher__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </span>
     </label>
     
     <label class="switcher__option">
       <input class="switcher__input" type="radio" name="nav" value="dua" c-option="2">
-      <span class="switcher__icon">🤲</span>
+      <span class="switcher__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+      </span>
     </label>
     
     <label class="switcher__option">
       <input class="switcher__input" type="radio" name="nav" value="stats" c-option="3">
-      <span class="switcher__icon">📊</span>
+      <span class="switcher__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      </span>
     </label>
   </fieldset>
 
