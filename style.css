@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
 
 body {
   --c-glass: #bbbbbc;
@@ -17,27 +18,31 @@ body {
   background: var(--c-bg);
   color: var(--c-content);
   margin: 0;
-  padding-bottom: 100px; /* Отступ для нижнего бара */
+  padding-bottom: 100px; 
   transition: background 400ms cubic-bezier(1, 0.0, 0.4, 1), color 400ms cubic-bezier(1, 0.0, 0.4, 1);
 }
 
+/* Премиальная темная тема (Золото и Графит) */
 body:has(input[value="dim"]:checked) {
-  --c-light: #99deff;
-  --c-dark: #20001b;
-  --c-glass: hsl(335 250% 74% / 1);
-  --c-content: #d5dbe2;
-  --c-action: #ff48a9;
-  --c-bg: #152433;
+  --c-light: #fef0c7;
+  --c-dark: #000000;
+  --c-glass: #2a2a2c;
+  
+  --c-content: #e4e4e7;
+  --c-action: #d4af37; /* Матовое золото */
+  
+  --c-bg: #0d0d0f; /* Глубокий темный фон */
+  
   --glass-reflex-dark: 2;
-  --glass-reflex-light: 0.7;
-  --saturation: 200%;
+  --glass-reflex-light: 0.15;
+  
+  --saturation: 100%;
 }
 
-/* Твой Switcher переделанный в нижний бар навигации */
 .switcher {
   position: fixed;
   z-index: 100;
-  bottom: 30px; /* Изменено с top на bottom */
+  bottom: 35px; 
   top: auto; 
   left: 50%;
   translate: -50%;
@@ -50,11 +55,11 @@ body:has(input[value="dim"]:checked) {
   box-sizing: border-box;
   padding: 8px 12px 10px;
   margin: 0 auto;
-  border: none;
+  border: 1px solid rgba(212, 175, 55, 0.1); /* Легкая золотая рамка */
   border-radius: 99em;
-  background-color: color-mix(in srgb, var(--c-glass) 12%, transparent);
-  backdrop-filter: blur(8px) saturate(var(--saturation));
-  -webkit-backdrop-filter: blur(8px) saturate(var(--saturation));
+  background-color: color-mix(in srgb, var(--c-glass) 30%, transparent);
+  backdrop-filter: blur(15px) saturate(var(--saturation));
+  -webkit-backdrop-filter: blur(15px) saturate(var(--saturation));
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
     inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
@@ -64,8 +69,7 @@ body:has(input[value="dim"]:checked) {
     inset -1.5px 2.5px 0px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent), 
     inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent), 
     inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent), 
-    0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent), 
-    0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+    0px 10px 25px 0px rgba(0,0,0,0.5);
 }
 
 .switcher__legend, .switcher__input, .switcher__filter {
@@ -73,62 +77,63 @@ body:has(input[value="dim"]:checked) {
 }
 
 .switcher__icon {
-  display: block; width: 100%; font-size: 24px; text-align: center; transition: scale 200ms cubic-bezier(0.5, 0, 0, 1);
+  display: flex; justify-content: center; align-items: center; width: 100%; transition: scale 200ms cubic-bezier(0.5, 0, 0, 1);
+  color: inherit;
 }
 
 .switcher__option {
   --c: var(--c-content);
+  color: var(--c);
   display: flex; justify-content: center; align-items: center; padding: 0 16px; width: 68px; height: 100%; box-sizing: border-box; border-radius: 99em; transition: all 160ms;
 }
 
-.switcher__option:hover { cursor: pointer; }
-.switcher__option:hover .switcher__icon { scale: 1.2; }
-.switcher__option:has(input:checked) { cursor: auto; }
-.switcher__option:has(input:checked) .switcher__icon { scale: 1; }
+.switcher__option:hover { cursor: pointer; --c: var(--c-action); }
+.switcher__option:hover .switcher__icon { scale: 1.1; }
+.switcher__option:has(input:checked) { cursor: auto; --c: var(--c-bg); }
+.switcher__option:has(input:checked) .switcher__icon { scale: 1; color: var(--c-bg); }
 
 .switcher::after {
   content: ''; position: absolute; left: 4px; top: 4px; display: block; width: 84px; height: calc(100% - 10px); border-radius: 99em;
-  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent); z-index: -1;
-  box-shadow: 
-    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
-    inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
-    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent), 
-    0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  background-color: var(--c-action); /* Активный ползунок золотой */
+  z-index: -1;
+  box-shadow: 0px 4px 10px rgba(212, 175, 55, 0.3);
 }
 
-.switcher:has(input[c-option="1"]:checked)::after { translate: 0 0; transition: all 400ms ease; }
-.switcher:has(input[c-option="2"]:checked)::after { translate: 76px 0; transition: all 400ms ease; }
-.switcher:has(input[c-option="3"]:checked)::after { translate: 152px 0; transition: all 400ms ease; }
+.switcher:has(input[c-option="1"]:checked)::after { translate: 0 0; transition: all 400ms cubic-bezier(1, 0.0, 0.4, 1); }
+.switcher:has(input[c-option="2"]:checked)::after { translate: 76px 0; transition: all 400ms cubic-bezier(1, 0.0, 0.4, 1); }
+.switcher:has(input[c-option="3"]:checked)::after { translate: 152px 0; transition: all 400ms cubic-bezier(1, 0.0, 0.4, 1); }
 
-/* Article & App Styles */
 .article { display: flex; flex-direction: column; align-items: center; padding: 2em 1.5em; }
 h1, h2, h3, p { width: 100%; max-width: 600px; box-sizing: border-box; margin-top: 0;}
-h1 { font-size: 3em; margin: 0.2em 0; }
-h2 { font-size: 1.8em; margin: 0.5em 0; }
+h1 { font-size: 3em; margin: 0.2em 0; font-weight: 500;}
+h2 { font-size: 1.6em; margin: 0.5em 0; font-weight: 400; opacity: 0.9;}
+
 .box {
-  padding: 1.5em; width: 100%; max-width: 500px;
-  border-top: 4px solid color-mix(in srgb, var(--c-action) 50%, transparent); border-radius: 0.8em;
-  background-color: color-mix(in srgb, var(--c-action) 8%, var(--c-bg)); backdrop-filter: blur(10px);
+  padding: 2em; width: 100%; max-width: 500px;
+  border-top: 1px solid rgba(212, 175, 55, 0.3); border-radius: 1.2em;
+  background-color: rgba(26, 26, 28, 0.6); 
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .glass-btn {
-  background: color-mix(in srgb, var(--c-action) 20%, transparent); color: var(--c-content);
-  border: 1px solid color-mix(in srgb, var(--c-action) 50%, transparent);
-  padding: 15px 30px; border-radius: 30px; font-size: 18px; font-family: inherit; cursor: pointer;
-  backdrop-filter: blur(5px); transition: 0.3s;
+  background: transparent; color: var(--c-action);
+  border: 1px solid var(--c-action);
+  padding: 15px 35px; border-radius: 30px; font-size: 18px; font-family: inherit; cursor: pointer;
+  transition: 0.4s ease; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
 }
-.glass-btn:hover { background: var(--c-action); color: #fff; }
+.glass-btn:hover { background: var(--c-action); color: var(--c-bg); box-shadow: 0 0 15px rgba(212,175,55,0.4); }
 
 .glass-input {
-  background: color-mix(in srgb, var(--c-bg) 50%, transparent); color: var(--c-content);
-  border: 1px solid var(--c-action); padding: 10px; border-radius: 15px; font-size: 24px;
-  width: 100px; text-align: center; font-family: inherit; outline: none;
+  background: rgba(0,0,0,0.3); color: var(--c-action);
+  border: 1px solid rgba(212,175,55,0.4); padding: 15px; border-radius: 15px; font-size: 28px;
+  width: 120px; text-align: center; font-family: inherit; outline: none; transition: 0.3s;
 }
+.glass-input:focus { border-color: var(--c-action); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
 
-/* Модальное окно будильника */
 .modal {
   display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+  background-color: rgba(0,0,0,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   justify-content: center; align-items: center;
 }
-.modal-content { text-align: center; border-top: 4px solid red; background: var(--c-bg); }
+.modal-content { text-align: center; border-top: 2px solid var(--c-action); }
