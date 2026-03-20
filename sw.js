@@ -14,7 +14,6 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(caches.match(e.request).then((response) => response || fetch(e.request)));
 });
 
-// Обработка клика по фоновому уведомлению
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   event.waitUntil(
