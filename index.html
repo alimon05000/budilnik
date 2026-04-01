@@ -3,86 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LibraryOS | Premium Notes</title>
-    <meta name="theme-color" content="#050b14">
+    <title>IslamicLibrary OS | Premium</title>
+    <meta name="theme-color" content="#0a0f1a">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0f1a;
+            --glass-bg: rgba(16, 24, 40, 0.7);
+            --glass-border: rgba(212, 175, 55, 0.2);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #d4af37;
+            --accent-soft: rgba(212, 175, 55, 0.1);
+            --emerald: #10b981;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(212, 175, 55, 0.3);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #b8860b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background var(--transition);
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, rgba(16,185,129,0.03) 100%);
+            filter: blur(100px);
+            z-index: -1;
+            top: -10%; right: -10%;
+        }
+
+        .app-shell {
+            display: flex;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .logo { font-size: 22px; font-weight: 700; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+
+        .nav-tabs { display: flex; flex-direction: column; gap: 8px; }
+        .tab-btn {
+            background: none; border: none;
+            padding: 14px 18px;
+            border-radius: 14px;
+            color: var(--text-muted);
+            text-align: left;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+        .tab-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            box-shadow: inset 0 0 0 1px var(--glass-border);
+        }
+
+        .main-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .main-container::-webkit-scrollbar { width: 4px; }
+        .main-container::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+        .search-bar {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px 25px;
+            color: var(--text-main);
+            font-size: 16px;
+            margin-bottom: 30px;
+            outline: none;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: transform var(--transition), border-color var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .card h3 { margin-bottom: 8px; color: var(--accent); }
+        .card p { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; }
+
+        .badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--emerald);
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Reading View */
+        .reader {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            padding: 50px;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+        }
+        .reader h1 { font-size: 32px; margin-bottom: 10px; color: var(--accent); }
+        .reader-meta { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
+        
+        .content-block { margin-bottom: 40px; }
+        .content-block h2 { color: var(--emerald); margin-bottom: 15px; font-size: 22px; display: flex; align-items: center; gap: 10px;}
+        .content-block h2::before { content: '◈'; font-size: 14px; color: var(--accent); }
+        .content-block p { margin-bottom: 15px; font-size: 17px; text-align: justify; color: var(--text-main); }
+        
+        .important-box {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 0 16px 16px 0;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 900px) {
+            .app-shell { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; padding: 20px; }
+            .reader { padding: 25px; }
+        }
+    </style>
 </head>
-<body data-theme="dark">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
+<body>
+    <div class="bg-glow"></div>
 
-    <div class="app-container">
-        <aside class="sidebar glass">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">✧</span>
-                    <h1>Library<span class="gold-text">OS</span></h1>
-                </div>
-            </div>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="logo">Library<span>OS</span></div>
             
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Поиск по книгам и мыслям..." class="glass-input">
+            <div class="nav-tabs">
+                <button class="tab-btn active" data-tab="knowledge">💎 Ключевые знания</button>
+                <button class="tab-btn" data-tab="pdf">📂 PDF Библиотека</button>
+                <button class="tab-btn" id="installBtn" style="margin-top: 20px; border: 1px dashed var(--accent);">📲 Установить PWA</button>
             </div>
 
-            <nav class="nav-menu">
-                <button class="nav-btn active" data-view="library">
-                    <i>📚</i> Библиотека
-                </button>
-                <button class="nav-btn" id="uploadBtn">
-                    <i>☁️</i> Загрузить книгу
-                </button>
-            </nav>
-
-            <div class="theme-switch-wrapper">
-                <button id="themeToggle" class="glass-btn">🌙 Темная / Светлая</button>
+            <div style="margin-top: auto;">
+                <button class="tab-btn" onclick="toggleTheme()">🌓 Сменить тему</button>
             </div>
         </aside>
 
-        <main class="main-content">
-            <div id="libraryView" class="view active">
-                <header class="view-header">
-                    <h2>Моя библиотека</h2>
-                    <p class="subtitle">Систематизированные знания и ключевые идеи</p>
-                </header>
-                <div class="books-grid" id="booksGrid">
-                    </div>
-                <div id="emptyState" class="empty-state hidden glass">
-                    <p>Книги не найдены. Загрузите свой первый файл.</p>
-                </div>
+        <main class="main-container">
+            <input type="text" class="search-bar" placeholder="Поиск по книгам 'Акида Уаситийя', 'Основы Имана'..." id="searchInput">
+            
+            <div id="knowledgeGrid" class="grid"></div>
+
+            <div id="readerView" class="reader hidden">
+                <button class="tab-btn" id="closeReaderBtn" style="margin-bottom: 20px;">← Назад к списку</button>
+                <div id="readerContent"></div>
             </div>
 
-            <div id="bookView" class="view hidden">
-                <button class="back-btn glass-btn" id="backBtn">← Назад в библиотеку</button>
-                <div class="book-detail-container glass" id="bookDetailContent">
-                    </div>
+            <div id="pdfGrid" class="grid hidden">
+                <div class="card" style="border-style: dashed; display: flex; align-items: center; justify-content: center; height: 200px;">
+                    <p>Здесь будут ваши загруженные PDF файлы</p>
+                </div>
             </div>
         </main>
     </div>
 
-    <div id="uploadModal" class="modal-overlay hidden">
-        <div class="modal-content glass">
-            <button class="close-btn" id="closeModal">×</button>
-            <h2>Загрузка новой книги</h2>
-            <div class="drop-zone" id="dropZone">
-                <div class="drop-icon">📥</div>
-                <p>Перетащите TXT файл сюда<br><span class="muted">или кликните для выбора</span></p>
-                <input type="file" id="fileInput" accept=".txt,.pdf" hidden>
-            </div>
-            <div class="progress-container hidden" id="progressContainer">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <p class="disclaimer muted">* Обработка PDF без сторонних библиотек концептуально ограничена, рекомендуется загрузка TXT формата для мгновенного анализа.</p>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
     <script>
+        // --- РАСШИРЕННАЯ БАЗА ЗНАНИЙ НА ОСНОВЕ 3-Х КНИГ ---
+        const KNOWLEDGE_BASE = [
+            // ========== 1. КНИГА: АКИДА УАСИТИЙЯ (Шейхуль-ислам Ибн Таймийя) ==========
+            {
+                id: 1,
+                title: "Акида Уаситийя",
+                author: "Шейхуль-Ислам Ибн Таймийя",
+                category: "Акида (Вероубеждение)",
+                summary: "Классический труд, излагающий вероубеждение праведных предшественников (саляфов) в вопросах единобожия, имен и атрибутов Аллаха.",
+                details: [
+                    { title: "Основы веры (Иман)", text: "Вера в Аллаха, Его ангелов, Его Писания, Его посланников, в Последний день и в предопределение (аль-кадар) — как хорошего, так и плохого." },
+                    { title: "Правило в отношении атрибутов Аллаха", text: "Подтверждение всех атрибутов Аллаха, которыми Он Сам Себя описал в Коране и Сунне, без искажения (тахриф), отрицания (та'тыль), образа (такйиф) и уподобления (тамсиль)." },
+                    { title: "Срединный путь (Васатыйя)", text: "Ахлю-с-Сунна занимают срединное положение между всеми сектами: в атрибутах (между джахмитами и мушаббихами), в деяниях (между джабаритами и кадаритами), в отношении к сподвижникам (между рафидитами и хариджитами)." },
+                    { title: "Возвышенность Аллаха", text: "Аллах находится над Своим Троном, возвышен над творениями, и в то же время Он близок к ним Своим знанием и слышит их мольбы." },
+                    { title: "Коран — Слово Аллаха", text: "Коран — это Речь Аллаха, ниспосланная, несотворенная. Она изошла от Него и к Нему вернется. Читаемый нами Коран в буквальном смысле является Словом Аллаха." },
+                    { title: "Положение сподвижников", text: "Лучшие из общины после Пророка (мир ему): Абу Бакр, затем Умар, затем Усман, затем Али. Необходимо любить всех сподвижников и воздерживаться от обсуждения их разногласий." },
+                    { title: "Чудеса святых (Карамат)", text: "Ахлю-с-Сунна верят в чудеса, которые Аллах может явить через Своих праведных рабов (аулия), как это было у людей пещеры (асхаб аль-кахф)." }
+                ]
+            },
+            // ========== 2. КНИГА: ОСНОВЫ ИМАНА (Редакция «К Исламу») ==========
+            {
+                id: 2,
+                title: "Основы Имана",
+                author: "Редакция «К Исламу»",
+                category: "Таухид (Единобожие)",
+                summary: "Понятное и подробное разъяснение шести столпов веры, условий свидетельства 'Ля иляха илля-Ллах' и видов поклонения.",
+                details: [
+                    { title: "Шесть столпов имана", text: "1. Вера в Аллаха. 2. Вера в Его ангелов. 3. Вера в Его Писания. 4. Вера в Его посланников. 5. Вера в Последний день. 6. Вера в предопределение." },
+                    { title: "Семь условий 'Ля иляха илля-Ллах'", text: "1. Знание (противоречит невежеству). 2. Уверенность (противоречит сомнению). 3. Согласие (противоречит отклонению). 4. Подчинение (противоречит отказу). 5. Правдивость (противоречит лживости). 6. Искренность (противоречит многобожию). 7. Любовь (противоречит ненависти)." },
+                    { title: "Три вида единобожия (Таухид)", text: "1. Таухид ар-Рубубийя (Единство Господства: Аллах — Творец, Властелин). 2. Таухид аль-Улюхийя (Единство Божественности: только Аллах достоин поклонения). 3. Таухид аль-Асма уа ас-Сыфат (Единство Имен и Атрибутов)." },
+                    { title: "Понятие поклонения (Ибада)", text: "Поклонение — это общее название для всех слов и дел, явных и скрытых, которые любит Аллах и которыми Он доволен. Его условия: искренность (ихляс) и следование Сунне (мутаба'а)." },
+                    { title: "Виды поклонения", text: "Ду'а (мольба), любовь, страх, надежда, таваккуль (упование), истигаса (поиск спасения), жертвоприношение, обет и другие." },
+                    { title: "Большое и малое многобожие", text: "Большое многобожие (аш-ширк аль-акбар) выводит человека из ислама. Малое многобожие (аш-ширк аль-асгар), например, показуха (рийа), не выводит из религии, но является великим грехом." }
+                ]
+            },
+            // ========== 3. КНИГА: БУЛУГ АЛЬ-МАРАМ (Ибн Хаджар аль-Аскалани) ==========
+            {
+                id: 3,
+                title: "Булуг аль-Марам",
+                author: "Ибн Хаджар аль-Аскалани",
+                category: "Фикх (Право)",
+                summary: "Сборник хадисов, на которые опираются мусульманские правоведы. Освещает все сферы жизни: от очищения до нравственности.",
+                details: [
+                    { title: "Книга Очищения (Китаб ат-Тахара)", text: "Вода остается чистой, если не изменилась ее характеристика (запах, цвет, вкус). Запрещено мочиться в стоячую воду. Посуда, которую облизала собака, моется семь раз, первый раз — землей." },
+                    { title: "Книга Намаза (Китаб ас-Салят)", text: "Времена намазов строго определены (зухр, аср, магриб, иша, фаджр). Групповой намаз в 27 раз превосходит намаз, совершенный в одиночку. Сутра (преграда) для молящегося обязательна." },
+                    { title: "Книга Поста (Китаб ас-Сыям)", text: "Пост в Рамадан обязателен. Намерение на пост необходимо утверждать до рассвета. Спешное разговение (ифтар) и предрассветная трапеза (сухур) являются Сунной." },
+                    { title: "Книга Закята (Китаб аз-Закат)", text: "Закят взимается с верблюдов, крупного рогатого скота, овец, золота, серебра, урожая. Пожертвование фитр обязательно для каждого мусульманина и раздается до праздничного намаза." },
+                    { title: "Книга Брака (Китаб ан-Никах)", text: "Жениться — Сунна. Женщина не может быть выдана замуж без ее согласия. Запрещены временный брак и брак 'шигар'." },
+                    { title: "Книга Этикета (Китаб аль-Адаб)", text: "Запрещены сплетни, зависть и гнев. Обязанности мусульманина: отвечать на приветствие, навещать больного, провожать погребальные носилки, принимать приглашение." }
+                ]
+            }
+        ];
+
+        const app = {
+            init() {
+                this.renderGrid(KNOWLEDGE_BASE);
+                this.setupEventListeners();
+                this.setupPWA();
+            },
+
+            renderGrid(data) {
+                const grid = document.getElementById('knowledgeGrid');
+                grid.innerHTML = data.map(book => `
+                    <div class="card" data-id="${book.id}">
+                        <span class="badge">${book.category}</span>
+                        <h3 style="margin-top:10px">${book.title}</h3>
+                        <p style="font-size: 12px; color: var(--accent);">${book.author}</p>
+                        <p>${book.summary}</p>
+                        <div style="color:var(--accent); font-size:12px; font-weight:600; margin-top: 10px;">Открыть конспекты →</div>
+                    </div>
+                `).join('');
+                
+                // Добавляем слушатели на каждую карточку
+                document.querySelectorAll('#knowledgeGrid .card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const id = parseInt(card.getAttribute('data-id'));
+                        this.openReader(id);
+                    });
+                });
+            },
+
+            openReader(id) {
+                const book = KNOWLEDGE_BASE.find(b => b.id === id);
+                if (!book) return;
+                
+                const contentDiv = document.getElementById('readerContent');
+                const grid = document.getElementById('knowledgeGrid');
+                const reader = document.getElementById('readerView');
+                
+                // Скрываем сетку и показываем читалку
+                grid.classList.add('hidden');
+                reader.classList.remove('hidden');
+                
+                // Заполняем содержимое
+                contentDiv.innerHTML = `
+                    <span class="badge">${book.category}</span>
+                    <h1>${book.title}</h1>
+                    <p class="book-author-large" style="color:var(--accent); margin-bottom: 20px;">Автор: ${book.author}</p>
+                    <div class="important-box">${book.summary}</div>
+                    ${book.details.map(d => `
+                        <div class="content-block">
+                            <h2>${d.title}</h2>
+                            <p>${d.text}</p>
+                        </div>
+                    `).join('')}
+                `;
+                window.scrollTo(0,0);
+            },
+
+            closeReader() {
+                const grid = document.getElementById('knowledgeGrid');
+                const reader = document.getElementById('readerView');
+                reader.classList.add('hidden');
+                grid.classList.remove('hidden');
+                // Сбрасываем поиск, чтобы показать все книги
+                document.getElementById('searchInput').value = '';
+                this.renderGrid(KNOWLEDGE_BASE);
+            },
+
+            search(query) {
+                const lowerQuery = query.toLowerCase();
+                if (!lowerQuery) {
+                    this.renderGrid(KNOWLEDGE_BASE);
+                    return;
+                }
+                
+                const filtered = KNOWLEDGE_BASE.filter(book => {
+                    // Поиск по названию, автору, категории и содержимому глав
+                    const titleMatch = book.title.toLowerCase().includes(lowerQuery);
+                    const authorMatch = book.author.toLowerCase().includes(lowerQuery);
+                    const categoryMatch = book.category.toLowerCase().includes(lowerQuery);
+                    const detailsMatch = book.details.some(d => d.title.toLowerCase().includes(lowerQuery) || d.text.toLowerCase().includes(lowerQuery));
+                    return titleMatch || authorMatch || categoryMatch || detailsMatch;
+                });
+                this.renderGrid(filtered);
+            },
+
+            setupEventListeners() {
+                // Поиск
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', (e) => this.search(e.target.value));
+                
+                // Кнопка закрытия читалки
+                document.getElementById('closeReaderBtn').addEventListener('click', () => this.closeReader());
+                
+                // Переключение вкладок
+                document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tab = btn.getAttribute('data-tab');
+                        this.switchTab(tab);
+                    });
+                });
+            },
+
+            switchTab(tab) {
+                // Обновляем активный класс на кнопках
+                document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+                
+                const grid = document.getElementById('knowledgeGrid');
+                const pdfGrid = document.getElementById('pdfGrid');
+                const reader = document.getElementById('readerView');
+                
+                reader.classList.add('hidden');
+                
+                if (tab === 'pdf') {
+                    grid.classList.add('hidden');
+                    pdfGrid.classList.remove('hidden');
+                } else {
+                    grid.classList.remove('hidden');
+                    pdfGrid.classList.add('hidden');
+                    this.renderGrid(KNOWLEDGE_BASE);
+                }
+            },
+
+            setupPWA() {
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    const installBtn = document.getElementById('installBtn');
+                    installBtn.style.display = 'block';
+                });
+                document.getElementById('installBtn').onclick = () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then(() => deferredPrompt = null);
+                    }
+                };
+            }
+        };
+
+        function toggleTheme() {
+            const theme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+
+        // Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Reg failed:', err));
-            });
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
 </body>
