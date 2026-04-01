@@ -271,3 +271,4 @@ class LibraryApp {
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new LibraryApp();
 });
+
