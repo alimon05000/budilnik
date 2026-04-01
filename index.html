@@ -1,87 +1,89 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tahajjud Premium</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LibraryOS | Premium Notes</title>
+    <meta name="theme-color" content="#050b14">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-theme="dark">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
 
-  <audio id="alarm-sound" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <div class="app-container">
+        <aside class="sidebar glass">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">✧</span>
+                    <h1>Library<span class="gold-text">OS</span></h1>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Поиск по книгам и мыслям..." class="glass-input">
+            </div>
 
-  <main id="tab-timer" class="tab-content active article">
-    <h2>Треть ночи</h2>
-    <div class="box" style="text-align: center;">
-      <p id="maghrib-time" style="opacity: 0.7;">Магриб: Загрузка...</p>
-      <p id="fajr-time" style="opacity: 0.7;">Фаджр: Загрузка...</p>
-      <hr style="border-color: var(--c-action); opacity: 0.2; margin: 15px 0;">
-      <h3 style="color: var(--c-action);">Начало 3-й трети:</h3>
-      <h1 id="third-night-time" style="font-size: 4em; font-weight: 300;">--:--</h1>
-      <button id="enable-alarm-btn" class="glass-btn">Включить будильник</button>
-      <p id="alarm-status" style="font-size: 0.8em; margin-top: 15px; color: var(--c-action);"></p>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-view="library">
+                    <i>📚</i> Библиотека
+                </button>
+                <button class="nav-btn" id="uploadBtn">
+                    <i>☁️</i> Загрузить книгу
+                </button>
+            </nav>
+
+            <div class="theme-switch-wrapper">
+                <button id="themeToggle" class="glass-btn">🌙 Темная / Светлая</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="libraryView" class="view active">
+                <header class="view-header">
+                    <h2>Моя библиотека</h2>
+                    <p class="subtitle">Систематизированные знания и ключевые идеи</p>
+                </header>
+                <div class="books-grid" id="booksGrid">
+                    </div>
+                <div id="emptyState" class="empty-state hidden glass">
+                    <p>Книги не найдены. Загрузите свой первый файл.</p>
+                </div>
+            </div>
+
+            <div id="bookView" class="view hidden">
+                <button class="back-btn glass-btn" id="backBtn">← Назад в библиотеку</button>
+                <div class="book-detail-container glass" id="bookDetailContent">
+                    </div>
+            </div>
+        </main>
     </div>
-  </main>
 
-  <main id="tab-dua" class="tab-content article" style="display: none;">
-    <h2>Дуа и Зикр</h2>
-    <div class="box">
-      <h3 style="color: var(--c-action);">Дуа Кунут (Махдина)</h3>
-      <p dir="rtl" style="font-size: 1.6em; line-height: 2.2; text-align: right; font-family: 'Amiri', serif;">
-        اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، إِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ
-      </p>
-      <p style="font-size: 0.9em; opacity: 0.8; margin-top: 20px;">
-        О Аллах, поведи меня прямым путем вместе с теми, кого Ты повел прямым путем. Избавь меня [от всего дурного] вместе с теми, кого Ты избавил. Возьми меня под Свое покровительство вместе с теми, кого Ты взял под Свое покровительство...
-      </p>
+    <div id="uploadModal" class="modal-overlay hidden">
+        <div class="modal-content glass">
+            <button class="close-btn" id="closeModal">×</button>
+            <h2>Загрузка новой книги</h2>
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-icon">📥</div>
+                <p>Перетащите TXT файл сюда<br><span class="muted">или кликните для выбора</span></p>
+                <input type="file" id="fileInput" accept=".txt,.pdf" hidden>
+            </div>
+            <div class="progress-container hidden" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p class="disclaimer muted">* Обработка PDF без сторонних библиотек концептуально ограничена, рекомендуется загрузка TXT формата для мгновенного анализа.</p>
+        </div>
     </div>
-  </main>
 
-  <main id="tab-stats" class="tab-content article" style="display: none;">
-    <h2>Статистика</h2>
-    <div class="box" style="text-align: center;">
-      <p style="opacity: 0.8;">Выполнено ночных выстаиваний:</p>
-      <h1 id="stats-count" style="font-size: 5em; color: var(--c-action); margin: 10px 0;">0</h1>
-    </div>
-  </main>
-
-  <div id="puzzle-modal" class="modal">
-    <div class="box modal-content">
-      <h2 style="color: var(--c-action);">ВРЕМЯ ТАХАДЖУДА</h2>
-      <p>Чтобы выключить будильник, решите пример:</p>
-      <h1 id="math-problem" style="font-size: 3em;">15 + 27 = ?</h1>
-      <input type="number" id="puzzle-answer" placeholder="Ответ" class="glass-input">
-      <button id="submit-puzzle" class="glass-btn" style="margin-top: 20px;">Отключить</button>
-      <p id="puzzle-error" style="color: #ff4d4d; display: none; margin-top: 10px;">Неверно, попробуйте еще раз!</p>
-    </div>
-  </div>
-
-  <fieldset class="switcher" id="bottom-nav">
-    <legend class="switcher__legend">Навигация</legend>
-    <input class="switcher__filter" type="checkbox" id="theme-switch" value="dim" checked>
-    
-    <label class="switcher__option">
-      <input class="switcher__input" type="radio" name="nav" value="timer" c-option="1" checked>
-      <span class="switcher__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      </span>
-    </label>
-    
-    <label class="switcher__option">
-      <input class="switcher__input" type="radio" name="nav" value="dua" c-option="2">
-      <span class="switcher__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
-      </span>
-    </label>
-    
-    <label class="switcher__option">
-      <input class="switcher__input" type="radio" name="nav" value="stats" c-option="3">
-      <span class="switcher__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-      </span>
-    </label>
-  </fieldset>
-
-  <script src="app.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Reg failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
