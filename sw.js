@@ -1,33 +1,42 @@
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open('tahajjud-store-premium').then((cache) => cache.addAll([
-      '/',
-      '/index.html',
-      '/style.css',
-      '/app.js',
-      '/manifest.json'
-    ]))
-  );
+const CACHE_NAME = 'libraryos-cache-v1';
+const urlsToCache = [
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './manifest.json'
+];
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+    );
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(caches.match(e.request).then((response) => response || fetch(e.request)));
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                // Если файл есть в кеше, возвращаем его
+                if (response) return response;
+                // Иначе делаем сетевой запрос
+                return fetch(event.request);
+            })
+    );
 });
 
-self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      if (clientList.length > 0) {
-        let client = clientList[0];
-        for (let i = 0; i < clientList.length; i++) {
-          if (clientList[i].focused) {
-            client = clientList[i];
-          }
-        }
-        return client.focus();
-      }
-      return clients.openWindow('/');
-    })
-  );
+self.addEventListener('activate', event => {
+    const cacheWhitelist = [CACHE_NAME];
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
 });
