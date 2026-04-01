@@ -1,15 +1,20 @@
 {
-  "name": "Tahajjud Alarm",
-  "short_name": "Tahajjud",
-  "start_url": ".",
+  "name": "LibraryOS Premium",
+  "short_name": "LibraryOS",
+  "description": "Ультра-премиальная библиотека и PWA для чтения заметок.",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#152433",
-  "theme_color": "#152433",
-  "description": "Будильник для последней трети ночи",
+  "background_color": "#050b14",
+  "theme_color": "#050b14",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>",
       "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>",
+      "sizes": "512x512",
       "type": "image/svg+xml"
     }
   ]
